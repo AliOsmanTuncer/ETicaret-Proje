@@ -21,7 +21,10 @@ namespace Eticaret.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=MSI-ALI\INSTANCE2024; Database=EticaretDb; Integrated Security=True; TrustServerCertificate=True;");
+            //LOKAL SUNUCU
+            //optionsBuilder.UseSqlServer(@"Server=MSI-ALI\INSTANCE2024; Database=EticaretDb; Integrated Security=True; TrustServerCertificate=True;");
+            //MONSTERASP.NET
+            optionsBuilder.UseSqlServer(@"Server=db14455.databaseasp.net; Database=db14455; User Id=db14455; Password=dD?52rE-e_9B; Encrypt=False; MultipleActiveResultSets=True;");
 
             //Bu satırı kaldırabilirim. Migration ve update database komutu çalıştırken hata almamak için 
             optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
