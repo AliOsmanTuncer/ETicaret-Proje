@@ -1,0 +1,60 @@
+﻿@model Category
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="text-end mb-3">
+    <input type="hidden" id="categoryId" value="@Model.Id">
+
+    <select class="form-select w-auto d-inline-block" id="sortOptions">
+        <option value="">Sıralama Seç</option>
+        <option value="price_asc">Fiyata Göre (Artan)</option>
+        <option value="price_desc">Fiyata Göre (Azalan)</option>
+        <option value="name_asc">İsme Göre (A-Z)</option>
+        <option value="name_desc">İsme Göre (Z-A)</option>
+    </select>
+</div>
+
+
+@if (Model.Products != null && Model.Products.Any())
+{
+    <h1 class="text-center mb-5">@(Model.Name)</h1>
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        @foreach (var item in Model.Products)
+        {
+            <partial name="_ProductView" model="item" />
+        }
+    </div>
+}
+else
+{
+    <div class="container d-flex justify-content-center align-items-center" style="height: 50vh;">
+        <div class="alert alert-warning my-5 text-center">
+            <h5>Bu Kategoriye Ait Bir Ürün Bulunmamaktadır.</h5>
+        </div>
+    </div>
+}
+
+<script>
+    document.getElementById("sortOptions").addEventListener("change", function () {
+
+        let selectedOption = this.value;
+        let categoryId = document.getElementById("categoryId").value;
+        let newUrl = `/Categories/Index?id=${categoryId}&sort=${selectedOption}`;
+
+        window.location.href = newUrl;
+    });
+
+    // Sayfa yüklendiğinde mevcut sıralama seçeneğini koru
+    document.addEventListener("DOMContentLoaded", function () {
+
+        let currentUrl = new URL(window.location.href);
+        let selectedSort = currentUrl.searchParams.get("sort");
+
+        if (selectedSort) {
+            document.getElementById("sortOptions").value = selectedSort;
+        }
+    });
+</script>
+

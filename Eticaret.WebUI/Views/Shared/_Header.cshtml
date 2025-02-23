@@ -1,0 +1,119 @@
+﻿@using Eticaret.WebUI.ExtensionMethods
+
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container">
+            <a href="/" class="d-flex align-items-center me-3">
+                <img src="/Img/SiteLogo2.png" alt="Site Logo" width="30" height="30">
+            </a>
+            <a class="navbar-brand me-3" href="/Admin">Admin'e</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Arama Formu -->
+            <form action="/Products" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 w-auto" role="search">
+                <input name="q" type="search" class="form-control me-2" placeholder="Sitede Ara..." aria-label="Search">
+            </form>
+
+            <div class="navbar-collapse collapse d-flex justify-content-end align-items-center">
+                <!-- Menü Bölümü -->
+                <ul class="navbar-nav m-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Anasayfa</a>
+                    </li>
+                    @await Component.InvokeAsync("Categories")
+                </ul>
+
+                <!-- Kullanıcı Giriş Durumu -->
+                @if (Context.User.Identity.IsAuthenticated)
+                {
+                    <div class="dropdown me-3">
+                        <a class="dropdown-toggle nav-link text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-fill"></i>Hesabım
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/Account/">Kullanıcı Bilgileri</a></li>
+                            <li><a class="dropdown-item" href="/MyAddresses/">Kayıtlı Adreslerim</a></li>
+                            <li><a class="dropdown-item" href="/Account/MyOrders">Siparişlerim</a></li>
+                            <li><a class="dropdown-item" href="/Account/">Değerlendirmelerim</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="/Account/SignOut">
+                                    <i class="fa-solid fa-power-off"></i> Oturumu Kapat
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div class="dropdown me-3">
+                        <a class="dropdown-toggle nav-link text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person"></i>Giriş Yap
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="/Account/SignIn">Giriş</a></li>
+                            <li><a class="dropdown-item" href="/Account/SignUp">Üye Ol</a></li>
+                        </ul>
+                    </div>
+                }
+
+                <a class="nav-link text-dark me-3" href="/Favorites">
+                    @{
+                        var favorites = Context.Session.GetJson<List<Product>>("GetFavorites");
+                        if (favorites is not null && favorites.Count >0)
+                        {
+                            <i class="bi bi-heart-fill"></i>
+                            @:Favorilerim (@favorites.Count)
+                        }
+                        else
+                        {
+                            <i class="bi bi-heart"></i>
+                            @:Favorilerim
+                        }
+                    }
+                </a>
+
+                <!-- Sepetim -->
+                <div class="dropdown me-3">
+                    @{
+                        var cart = Context.Session.GetJson<Eticaret.Service.Concrete.CartService>("Cart");
+                        if (cart != null && cart.CartLines.Count > 0)
+                        {
+                            <a class="dropdown-toggle nav-link text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-cart4"></i>Sepetim
+                                <span class="badge bg-danger text-white ms-1 rounded-pill">
+                                    @cart.CartLines.Count
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @foreach (var item in cart.CartLines)
+                                {
+                                    <li>
+                                        <a class="dropdown-item d-flex align-items-center" href="/Products/Details/@item.Product.Id">
+                                            <img src="/Img/Products/@item.Product.Image" alt="Ürün Resmi" height="40" class="me-2" />
+                                            @item.Product.Name
+                                        </a>
+                                    </li>
+                                }
+                                <li class="text-center"><a class="btn btn-warning m-auto" href="/Cart">Sepet'e Git</a></li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <a class="nav-link text-dark" href="/Cart">
+                                <i class="bi bi-cart4"></i>Sepetim
+                            </a>
+                        }
+                    }
+                </div>
+                <a class="nav-link text-dark" asp-controller="Home" asp-action="ContactUs">
+                    <i class="bi bi-telephone"></i>İletişim
+                </a>
+            </div>
+        </div>
+    </nav>
+</header>

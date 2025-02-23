@@ -1,0 +1,51 @@
+﻿@model HomePageViewModel
+
+@{
+    ViewData["Title"] = "Anasayfa";
+    string currentMonth = DateTime.Now.ToString("MMMM", new System.Globalization.CultureInfo("tr-TR"));
+}
+
+<partial name="_Slider" model="Model.Sliders" />
+
+<section class="container my-5">
+    @if (Model.UserName is not null)
+    {
+        <h2 class="text-center">@Model.UserName ,Size Özel İndirimli Ürünler</h2>
+    }
+    else
+    {
+        <h2 class="text-center">Size Özel İndirimli Ürünler</h2>
+    }
+
+    @if (Model.Products != null && Model.Products.Any())
+    {
+        <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            @foreach (var item in Model.Products)
+            {
+                <partial name="_ProductView" model="item" />
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">Şu anda özel ürün bulunmamaktadır.</div>
+    }
+</section>
+
+<section class="container my-5">
+    <h2 class="text-center">@currentMonth Kampanyalarını Kaçırma</h2>
+
+    @if (Model.News != null && Model.News.Any())
+    {
+        <div class="row gx-4 gx-lg-5 row-cols-1 row-cols-sm-2 justify-content-center">
+            @foreach (var item in Model.News)
+            {
+                <partial name="_NewsView" model="item" />
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center">Şu anda kampanya bulunmamaktadır.</div>
+    }
+</section>
